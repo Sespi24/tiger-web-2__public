@@ -13,7 +13,7 @@
     'title'               => '',
     'course_description'  => '',
   ];                                                                                          // Class data
-
+/*
   if ($id) {                                                                                  // If have id
     $sql    = "SELECT c.id, c.course_code, c.title, c.course_description
                  FROM class AS c
@@ -28,7 +28,7 @@
       exit();                                                                                 // Redirect
     }
   }
-
+ */
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {                                                 // If form submitted
     // Get class data
     $class['title']               = $_POST['title'];
@@ -46,10 +46,11 @@
     } else {*/
       unset($arguments['id']);                                                                //  Remove id
       $sql    = "INSERT INTO class (title, course_code, course_description)
-                      VALUES (:title, :course_code, :course_description);";
+                      VALUES (?, ?, ?);";
     //}                                                                                         // SQL to create class
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($arguments);                                                               // Run SQL to add class
+    $stmt->bind_params('sss', $class['title'], $class['course_code'], $class['course_description']);
+    $stmt->execute();                                                               // Run SQL to add class
     $pdo->commit();                                                                           // Commit changes
     
     $parameters = ['success' => 'Class added'];
@@ -83,7 +84,3 @@
     </form>
   </body>
 </html>
-
-
-
-
